@@ -1,0 +1,25 @@
+.queue-display-content {
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+}
+
+.queue-display-action-container {
+    border-width: 1px;
+    border-color:rgb(119, 119, 120);
+    border-style: solid;
+    width: 40px;
+    line-height: 40px;
+    min-height: 40px;
+    text-align: center;
+    vertical-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.queue-display-text {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 40px;
+    text-align: center;
+}

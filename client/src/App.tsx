@@ -25,6 +25,7 @@ const App = () => {
       <h1 className='app-title'>Waalaxy FIFO</h1>
       <div className='app-content'>
         <div className='first-panel'>
+          <QueueDisplay queueContent={queueContent}/>
         </div>
         <div className='second-panel'>
           <ActionsForm reloadQueue={fetchQueue}/>
