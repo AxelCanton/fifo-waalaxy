@@ -1,29 +1,54 @@
-export let maximalValue = 0;
+type ActionData = {
+    credit: number,
+    maximalValue: number
+}
 
 const actionCredit: {
-    [actionType: string]: {
-        credit: number,
-        maximalValue: number
-    }
+    [actionType: string]: ActionData
 } = {};
 
 const fifoQueue: string[] = [];
 
+export const addAction = (action: string) => {
+    if (actionCredit[action] !== undefined) {
+        return false;
+    }
+    actionCredit[action] = {
+        credit: 0,
+        maximalValue: 0
+    };
+    return true;
+};
 
-export const addToPipe = (newValue: string) => {
+export const addToQueue = (newValue: string) => {
     fifoQueue.push(newValue);
 };
 
-export const removeFromPipe = () => {
-    const removedAction = fifoQueue.shift();
-    if (removedAction) {
-        actionCredit[removedAction].credit--;
+export const getActions = () => Object.keys(actionCredit);
+
+export const getAction = (action: string): ActionData | undefined => actionCredit[action];
+
+export const getQueueContent = () => fifoQueue;
+
+export const removeFromQueue = () => {
+    if (fifoQueue.length === 0) {
+        return;
     }
-    return removedAction;
+    const actionToRemove = fifoQueue[fifoQueue.length - 1];
+    if (actionCredit[actionToRemove].credit === 0) {
+        return;
+    }
+
+    fifoQueue.shift();
+    actionCredit[actionToRemove].credit--;
+    return actionToRemove;
 };
 
 export const setMaximalValue = (action: string, newValue: number) => {
-    maximalValue = newValue;
+    if(!actionCredit[action]) {
+        return;
+    }
+    actionCredit[action].maximalValue = newValue;
 };
 
 export const setNewCredits = () => {
@@ -35,6 +60,16 @@ export const setNewCredits = () => {
     };
     Object.keys(actionCredit).forEach((actionType) => {
         const actionObject = actionCredit[actionType];
-        actionObject.credit = actionObject.maximalValue * getRandomNumber();
+        actionObject.credit = Math.round(actionObject.maximalValue * getRandomNumber());
     });
 };
+
+/**
+ * test only
+ */
+export const _resetData = () => {
+    for (const prop of Object.getOwnPropertyNames(actionCredit)) {
+        delete actionCredit[prop];
+    }
+    fifoQueue.length = 0;
+}
