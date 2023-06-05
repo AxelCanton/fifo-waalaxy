@@ -1,17 +1,24 @@
 type Props = {
+    inputClass?: string
     onChange: (newValue: string) => void
-    type?: 'number' | 'text'
+    type?: 'number' | 'text',
     value?: string | number
 }
 
 const Input = ({
+    inputClass,
     onChange,
     type = 'text',
     value
 }: Props) => {
 
     return (
-        <input value={value} type={type} onChange={(event) => onChange(event.target.value)}/>
+        <input
+            className={inputClass}
+            type={type}
+            onChange={(event) => onChange(event.target.value)}
+            value={value}
+        />
     );
 };
 

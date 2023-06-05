@@ -1,0 +1,24 @@
+.actions-form-container {
+    display: flex;
+    width: 100%
+}
+
+.actions-form-maximal-value {
+    width: 50%
+}
+
+.actions-form-maximal-value-input {
+    margin-right: 20px
+}
+
+.actions-form-refresh-icon {
+    width: 17px;
+    height: 17px;
+}
+
+.actions-form-push-queue {
+    display: flex;
+    width: 50%;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
