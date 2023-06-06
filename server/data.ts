@@ -55,8 +55,8 @@ export const setNewCredits = () => {
     // Random number between 0.8 and 1
     const getRandomNumber = () => {  
         return Math.floor(
-          Math.random() * 3 + 8
-        ) / 10;
+          Math.random() * 21 + 80
+        ) / 100;
     };
     Object.keys(actionCredit).forEach((actionType) => {
         const actionObject = actionCredit[actionType];
