@@ -18,7 +18,7 @@ const ActionsForm = ({
     const [actions, setActions] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedAction, setSelectedAction] = useState('');
-    const [maxValue, setMaxValue] = useState(0);
+    const [maxValue, setMaxValue] = useState<number | null>(null);
     const [credit, setCredit] = useState(0);
     const [initialMaxValue, setInitialMaxValue] = useState(0);
     const [notification, setNotification] = useNotification();
@@ -38,6 +38,7 @@ const ActionsForm = ({
         const formattedResponse = await response.json();
         if (typeof formattedResponse?.action === 'object') {
             setMaxValue(formattedResponse.action.maximalValue);
+            setInitialMaxValue(formattedResponse.action.maximalValue);
             setCredit(formattedResponse.action.credit);
         }
     };
@@ -59,8 +60,11 @@ const ActionsForm = ({
         }
     };
 
-    const onSubmitMaximalValue = async (event: React.FormEvent<HTMLFormElement>, value: number, action: string) => {
+    const onSubmitMaximalValue = async (event: React.FormEvent<HTMLFormElement>, value: number | null, action: string) => {
         event.preventDefault();
+        if (value === null) {
+            return;
+        }
         const response = await fetch(API_URL + '/maximal-value', {
             body: JSON.stringify({
                 action: action,
@@ -83,10 +87,11 @@ const ActionsForm = ({
 
     useEffect(() => {
         if (selectedAction) {
-            setMaxValue(0);
+            setMaxValue(null);
             if (intervalIdRef.current) {
                 clearInterval(intervalIdRef.current)
             }
+            fetchAction(selectedAction);
             intervalIdRef.current = setInterval(() => fetchAction(selectedAction), 120000);
         }
     }, [selectedAction])
@@ -117,13 +122,11 @@ const ActionsForm = ({
                                         value={maxValue}
                                         onChange={(newValue) => {
                                             const parsedValue = parseFloat(newValue);
-                                            if (!Number.isNaN(parsedValue)) {
-                                                setMaxValue(parsedValue);
-                                            }
+                                            setMaxValue(Number.isNaN(parsedValue) ? null : parsedValue);
                                         }}
                                     />
                                     <Button
-                                        disabled={maxValue === initialMaxValue}
+                                        disabled={maxValue === null || maxValue === initialMaxValue}
                                         Icon={<img src='refresh.svg'
                                         className='actions-form-refresh-icon'/>}
                                     />
