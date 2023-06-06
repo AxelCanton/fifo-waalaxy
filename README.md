@@ -10,5 +10,5 @@ Ensuite, se déplacer dans le dossier /client et lancer :
 ### `npm run start`
 
 ## Test
-Dans les dossiers /client and /server, exécuter
+Se déplacer dans le dossier /server et exécuter :
 ### `npm run test`
