@@ -28,35 +28,6 @@ describe('/POST actions', () => {
 
 });
 
-describe('/POST maximal-value', () => {
-    beforeEach(async () => {
-        await request(app).post('/actions').send({name: 'A'});
-        await request(app).post('/actions').send({name: 'B'});
-        await request(app).post('/actions').send({name: 'C'});
-    });
-    afterEach(() => {
-        _resetData();
-    });
-    it('malformed body', async () => {
-        const responses = await Promise.all([
-            request(app).post('/maximal-value').send({maximalValue: 39}),
-            request(app).post('/maximal-value').send({actionType: 'A'}),
-            request(app).post('/maximal-value').send({maximalValue: 'abc', actionType: 'B'}),
-            request(app).post('/maximal-value').send({maximalValue: 50, actionType: true})
-        ]);
-        responses.forEach(response => expect(response.status).toBe(400));
-    });
-    it('good request', async () => {
-        const responses = await Promise.all([
-            request(app).post('/maximal-value').send({maximalValue: 5, actionType: 'B'}),
-            request(app).post('/maximal-value').send({maximalValue: 0, actionType: 'A'}),
-            request(app).post('/maximal-value').send({maximalValue: 100000, actionType: 'C'})
-        ]);
-
-        responses.forEach(response => expect(response.status).toBe(200));
-    });
-});
-
 describe('/POST add-to-queue', () => {
     beforeEach(async () => {
         await request(app).post('/actions').send({name: 'A'});
@@ -87,5 +58,28 @@ describe('/POST add-to-queue', () => {
         ]);
 
         responses.forEach(response => expect(response.status).toBe(200));
+    });
+});
+
+describe('GET /actions/:name', () => {
+    beforeEach(async () => {
+        await request(app).post('/actions').send({name: 'A'});
+        await request(app).post('/actions').send({name: 'B'});
+        await request(app).post('/actions').send({name: 'C'});
+    });
+    afterEach(() => {
+        _resetData();
+    });
+
+    it('unavailable action', async () => {
+        const response = await request(app).get('/actions/D').send();
+        expect(response.status).toBe(404);
+    });
+
+    it('good request', async () => {
+        const response = await request(app).get('/actions/A').send();
+        expect(response.status).toBe(200);
+        expect(typeof response.body.action.maximalValue).toBe('number');
+        expect(typeof response.body.action.credit).toBe('number');
     });
 });
